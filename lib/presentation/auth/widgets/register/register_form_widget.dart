@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skripsi_project/common/components/custom_font.dart';
+import 'package:skripsi_project/data/models/request/auth/register_request_model.dart';
+import 'package:skripsi_project/presentation/auth/login_page.dart';
 
 import '../../../../common/components/custom_button.dart';
+import '../../../../common/components/custom_loading_state.dart';
 import '../../../../common/components/custom_text_field.dart';
 import '../../../../common/constans/colors.dart';
+import '../../../../common/constans/navigation.dart';
 import '../../../../common/constans/variables.dart';
+import '../../bloc/register/register_bloc.dart';
 import '../component_row_widget.dart';
 
 class RegisterFormWidget extends StatefulWidget {
@@ -159,15 +166,50 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
           ),
         ),
         const SizedBox(height: 32),
-        CustomButton(
-          function: () {},
-          widget: const FontPoppins(
-            text: Variables.btnRegister,
-            size: 16,
-            fontWeight: FontWeight.w700,
-            color: MyColors.white,
-            alignment: TextAlign.center,
-          ),
+        BlocConsumer<RegisterBloc, RegisterState>(
+          builder: (context, state) {
+            return state.maybeWhen(
+              orElse: () {
+                return CustomButton(
+                  function: () {
+                    final model = RegisterRequestModel(
+                      name: fullnameController.text,
+                      password: passwordController.text,
+                      email: emailController.text,
+                      username: fullnameController.text.replaceAll(' ', ''),
+                    );
+                    context
+                        .read<RegisterBloc>()
+                        .add(RegisterEvent.register(model));
+                  },
+                  widget: const FontPoppins(
+                    text: Variables.btnRegister,
+                    size: 16,
+                    fontWeight: FontWeight.w700,
+                    color: MyColors.white,
+                    alignment: TextAlign.center,
+                  ),
+                );
+              },
+              loading: () {
+                return const CustomLoadingState();
+              },
+            );
+          },
+          listener: (context, state) {
+            state.maybeWhen(
+              orElse: () {},
+              success: (response) {
+                Navigations.pushAndRemoveNavigation(
+                  context,
+                  const LoginPage(),
+                );
+              },
+              error: (error) {
+                Fluttertoast.showToast(msg: error);
+              },
+            );
+          },
         )
       ],
     );

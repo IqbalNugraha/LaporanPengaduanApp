@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../common/constans/colors.dart';
 import '../common/constans/navigation.dart';
+import '../data/datasources/local_datasources.dart';
 import 'auth/login_page.dart';
+import 'bottom_navigation_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -14,13 +16,27 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigations.pushAndRemoveNavigation(
-        context,
-        const LoginPage(),
-      );
-    });
+    _checkAuth();
     super.initState();
+  }
+
+  void _checkAuth() async {
+    final auth = await LocalDatasource().isLogin();
+    if (auth == true) {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigations.pushAndRemoveNavigation(
+          context,
+          const BottomNavigationPage(),
+        );
+      });
+    } else {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigations.pushAndRemoveNavigation(
+          context,
+          const LoginPage(),
+        );
+      });
+    }
   }
 
   @override

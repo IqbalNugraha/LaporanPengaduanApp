@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:skripsi_project/data/models/request/auth/login_request_model.dart';
 
 import '../../../../common/components/custom_button.dart';
 import '../../../../common/components/custom_font.dart';
+import '../../../../common/components/custom_loading_state.dart';
 import '../../../../common/components/custom_text_field.dart';
 import '../../../../common/constans/colors.dart';
 import '../../../../common/constans/images.dart';
 import '../../../../common/constans/navigation.dart';
 import '../../../../common/constans/variables.dart';
+import '../../../../data/datasources/local_datasources.dart';
 import '../../../bottom_navigation_page.dart';
+import '../../bloc/login/login_bloc.dart';
 import '../../register_page.dart';
 import '../component_row_widget.dart';
 
@@ -47,9 +53,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 32),
           Align(
             alignment: Alignment.center,
             child: Image.asset(
@@ -105,21 +111,48 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             ),
           ),
           const SizedBox(height: 28),
-          CustomButton(
-            width: size.width,
-            function: () {
-              Navigations.pushAndRemoveNavigation(
-                context,
-                const BottomNavigationPage(),
+          BlocConsumer<LoginBloc, LoginState>(
+            builder: (context, state) {
+              return state.maybeWhen(
+                orElse: () {
+                  return CustomButton(
+                    width: size.width,
+                    function: () {
+                      final model = LoginRequestModel(
+                        identifier: emailController.text,
+                        password: passwordController.text,
+                      );
+                      context.read<LoginBloc>().add(LoginEvent.login(model));
+                    },
+                    widget: const FontPoppins(
+                      text: Variables.btnLogin,
+                      size: 16,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.white,
+                      alignment: TextAlign.start,
+                    ),
+                  );
+                },
+                loading: () {
+                  return const CustomLoadingState();
+                },
               );
             },
-            widget: const FontPoppins(
-              text: Variables.btnLogin,
-              size: 16,
-              fontWeight: FontWeight.w700,
-              color: MyColors.white,
-              alignment: TextAlign.start,
-            ),
+            listener: (context, state) {
+              state.maybeWhen(
+                orElse: () {},
+                success: (response) {
+                  LocalDatasource().saveAuthData(response);
+                  Navigations.pushAndRemoveNavigation(
+                    context,
+                    const BottomNavigationPage(),
+                  );
+                },
+                error: (error) {
+                  Fluttertoast.showToast(msg: error);
+                },
+              );
+            },
           ),
           const SizedBox(height: 14),
           GestureDetector(

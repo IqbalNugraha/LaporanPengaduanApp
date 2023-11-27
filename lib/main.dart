@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skripsi_project/presentation/splash_page.dart';
 
 import 'common/constans/colors.dart';
+import 'presentation/auth/bloc/login/login_bloc.dart';
+import 'presentation/auth/bloc/register/register_bloc.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -19,9 +22,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RegisterBloc(),
+        ),
+        BlocProvider(
+          create: (context) => LoginBloc(),
+        ),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SplashPage(),
+      ),
     );
   }
 }

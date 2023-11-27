@@ -26,7 +26,9 @@ class _LoginPageState extends State<LoginPage> {
           body: SizedBox(
             width: size.width,
             height: size.height,
-            child: const LoginFormWidget(),
+            child: const SingleChildScrollView(
+              child: LoginFormWidget(),
+            ),
           ),
         ),
       ),
