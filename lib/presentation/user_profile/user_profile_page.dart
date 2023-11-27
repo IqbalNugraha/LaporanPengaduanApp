@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skripsi_project/presentation/user_profile/widgets/profile_feature_widget.dart';
 
 import '../../common/components/custom_circle_avatar.dart';
-import '../../common/components/custom_font.dart';
 import '../../common/constans/colors.dart';
 import '../../common/constans/images.dart';
 
@@ -39,14 +38,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),
               ),
               const SizedBox(height: 16),
-              const FontPoppins(
-                text: "User 1",
-                size: 18,
-                fontWeight: FontWeight.w500,
-                color: MyColors.blackFont,
-                alignment: TextAlign.center,
-              ),
-              const SizedBox(height: 28),
               const Expanded(
                 child: ProfileFeatureWidget(),
               ),

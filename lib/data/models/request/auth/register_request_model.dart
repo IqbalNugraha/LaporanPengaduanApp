@@ -1,51 +1,49 @@
 import 'dart:convert';
 
 class RegisterRequestModel {
-  final String name;
-  final String password;
-  final String email;
-  final String username;
-  RegisterRequestModel({
-    required this.name,
-    required this.password,
-    required this.email,
-    required this.username,
-  });
+    final RegisterModel data;
 
-  RegisterRequestModel copyWith({
-    String? name,
-    String? password,
-    String? email,
-    String? username,
-  }) {
-    return RegisterRequestModel(
-      name: name ?? this.name,
-      password: password ?? this.password,
-      email: email ?? this.email,
-      username: username ?? this.username,
+    RegisterRequestModel({
+        required this.data,
+    });
+
+    factory RegisterRequestModel.fromJson(String str) => RegisterRequestModel.fromMap(json.decode(str));
+
+    String toJson() => json.encode(toMap());
+
+    factory RegisterRequestModel.fromMap(Map<String, dynamic> json) => RegisterRequestModel(
+        data: RegisterModel.fromMap(json["data"]),
     );
-  }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'password': password,
-      'email': email,
-      'username': username,
+    Map<String, dynamic> toMap() => {
+        "data": data.toMap(),
     };
-  }
+}
 
-  factory RegisterRequestModel.fromMap(Map<String, dynamic> map) {
-    return RegisterRequestModel(
-      name: map['name'] as String,
-      password: map['password'] as String,
-      email: map['email'] as String,
-      username: map['username'] as String,
+class RegisterModel {
+    final String name;
+    final String email;
+    final String password;
+
+    RegisterModel({
+        required this.name,
+        required this.email,
+        required this.password,
+    });
+
+    factory RegisterModel.fromJson(String str) => RegisterModel.fromMap(json.decode(str));
+
+    String toJson() => json.encode(toMap());
+
+    factory RegisterModel.fromMap(Map<String, dynamic> json) => RegisterModel(
+        name: json["name"],
+        email: json["email"],
+        password: json["password"],
     );
-  }
 
-  String toJson() => json.encode(toMap());
-
-  factory RegisterRequestModel.fromJson(String source) =>
-      RegisterRequestModel.fromMap(json.decode(source) as Map<String, dynamic>);
+    Map<String, dynamic> toMap() => {
+        "name": name,
+        "email": email,
+        "password": password,
+    };
 }

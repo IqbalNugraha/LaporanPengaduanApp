@@ -1,9 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/response/auth_response_model.dart';
+import 'package:skripsi_project/data/models/response/auth/login_response_model.dart';
 
 class LocalDatasource {
-  Future<void> saveAuthData(AuthResponseModel model) async {
+  Future<void> saveAuthData(LoginResponseModel model) async {
     final pref = await SharedPreferences.getInstance();
     await pref.setString('auth', model.toJson());
   }
@@ -16,29 +15,22 @@ class LocalDatasource {
   Future<String> getToken() async {
     final pref = await SharedPreferences.getInstance();
     final authJson = pref.getString('auth') ?? '';
-    final authData = AuthResponseModel.fromJson(authJson);
-    return authData.jwt ?? '';
+    final authData = LoginResponseModel.fromJson(authJson);
+    return authData.data?.jwt ?? '';
   }
 
   Future<String> getUsername() async {
     final pref = await SharedPreferences.getInstance();
     final authJson = pref.getString('auth') ?? '';
-    final authData = AuthResponseModel.fromJson(authJson);
-    return authData.user!.username ?? '';
+    final authData = LoginResponseModel.fromJson(authJson);
+    return authData.data?.attributes?.name ?? '';
   }
 
   Future<int> getId() async {
     final pref = await SharedPreferences.getInstance();
     final authJson = pref.getString('auth') ?? '';
-    final authData = AuthResponseModel.fromJson(authJson);
-    return authData.user!.id ?? 0;
-  }
-
-  Future<AuthData> getUser() async {
-    final pref = await SharedPreferences.getInstance();
-    final authJson = pref.getString('auth') ?? '';
-    final authData = AuthResponseModel.fromJson(authJson);
-    return authData.user!;
+    final authData = LoginResponseModel.fromJson(authJson);
+    return authData.data?.id ?? 0;
   }
 
   Future<bool> isLogin() async {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:skripsi_project/data/models/request/auth/login_request_model.dart';
 
+import '../../../../bloc/auth/login/login_bloc.dart';
 import '../../../../common/components/custom_button.dart';
 import '../../../../common/components/custom_font.dart';
 import '../../../../common/components/custom_loading_state.dart';
@@ -13,7 +14,6 @@ import '../../../../common/constans/navigation.dart';
 import '../../../../common/constans/variables.dart';
 import '../../../../data/datasources/local_datasources.dart';
 import '../../../bottom_navigation_page.dart';
-import '../../bloc/login/login_bloc.dart';
 import '../../register_page.dart';
 import '../component_row_widget.dart';
 
@@ -118,8 +118,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   return CustomButton(
                     width: size.width,
                     function: () {
-                      final model = LoginRequestModel(
-                        identifier: emailController.text,
+                      final model = LoginModel(
+                        email: emailController.text,
                         password: passwordController.text,
                       );
                       context.read<LoginBloc>().add(LoginEvent.login(model));

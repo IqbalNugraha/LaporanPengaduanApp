@@ -1,39 +1,45 @@
 import 'dart:convert';
 
 class LoginRequestModel {
-  final String identifier;
-  final String password;
-  LoginRequestModel({
-    required this.identifier,
-    required this.password,
-  });
+    final LoginModel data;
 
-  LoginRequestModel copyWith({
-    String? identifier,
-    String? password,
-  }) {
-    return LoginRequestModel(
-      identifier: identifier ?? this.identifier,
-      password: password ?? this.password,
+    LoginRequestModel({
+        required this.data,
+    });
+
+    factory LoginRequestModel.fromJson(String str) => LoginRequestModel.fromMap(json.decode(str));
+
+    String toJson() => json.encode(toMap());
+
+    factory LoginRequestModel.fromMap(Map<String, dynamic> json) => LoginRequestModel(
+        data: LoginModel.fromMap(json["data"]),
     );
-  }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'identifier': identifier,
-      'password': password,
+    Map<String, dynamic> toMap() => {
+        "data": data.toMap(),
     };
-  }
+}
 
-  factory LoginRequestModel.fromMap(Map<String, dynamic> map) {
-    return LoginRequestModel(
-      identifier: map['identifier'] as String,
-      password: map['password'] as String,
+class LoginModel {
+    final String email;
+    final String password;
+
+    LoginModel({
+        required this.email,
+        required this.password,
+    });
+
+    factory LoginModel.fromJson(String str) => LoginModel.fromMap(json.decode(str));
+
+    String toJson() => json.encode(toMap());
+
+    factory LoginModel.fromMap(Map<String, dynamic> json) => LoginModel(
+        email: json["email"],
+        password: json["password"],
     );
-  }
 
-  String toJson() => json.encode(toMap());
-
-  factory LoginRequestModel.fromJson(String source) =>
-      LoginRequestModel.fromMap(json.decode(source) as Map<String, dynamic>);
+    Map<String, dynamic> toMap() => {
+        "email": email,
+        "password": password,
+    };
 }
