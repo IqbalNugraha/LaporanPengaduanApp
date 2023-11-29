@@ -24,12 +24,29 @@ class Variables {
   static const String aboutUs = "About Us";
   static const String logout = "Log Out";
 
+  //detail profile
+  static const String name = "Name";
+  static const String phoneNumber = "Phone Number";
+  static const String birthDate = "Birth Date";
+  static const String gender = "Gender";
+  static const String address = "Address";
+  static const String email = "Email";
+  static const String noIdentity = "No Identity";
+
+  //edit profile
+  static const String pickDate = "Pick Date";
+  static const String choosePhoto = "Choose Photo";
+  static const String takePhoto = "Take Photo";
+  static const String removePhoto = "Remove Photo";
+
   //hint
   static const String hintEmail = "Input your email";
   static const String hintPassword = "Input your password";
   static const String hintFullname = "Input your fullname";
   static const String hintRePassword = "Input your retype password";
   static const String hintPhone = "ex: 08xx";
+  static const String hintIdIdentity = "ex: 327";
+  static const String hintAddress = "Input your address location";
 
   //message
   static const String msgSuccess = "Success";
@@ -40,6 +57,8 @@ class Variables {
   static const String msgPasswordNotSame = "Password not same";
   static const String msgPasswordLenght =
       "Password must have at least 8 characters \n with a mix of uppercase, lowercase, \n symbols, and numbers.";
+  static const String msgRemovePhoto =
+      "Are u sure want to remove this photo";
 
   //button
   static const String btnLogin = "Login";

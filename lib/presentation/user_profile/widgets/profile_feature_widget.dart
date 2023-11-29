@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skripsi_project/presentation/detail_profile/detail_profile_page.dart';
+import 'package:skripsi_project/presentation/edit_profile/edit_profile_page.dart';
 
 import '../../../bloc/account/get_account/get_account_bloc.dart';
 import '../../../common/components/custom_bottom_popup.dart';
@@ -79,7 +80,14 @@ class ProfileFeatureWidget extends StatelessWidget {
                     color: MyColors.brandColor,
                     size: 16,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigations.pushNavigation(
+                      context,
+                      EditProfilePage(
+                        data: response.data!,
+                      ),
+                    );
+                  },
                 ),
                 ListTile(
                   leading: const Icon(

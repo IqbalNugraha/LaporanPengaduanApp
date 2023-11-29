@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:skripsi_project/data/models/response/account/account_detail_response.dart';
-import 'package:skripsi_project/presentation/detail_profile/widgets/detail_data_widget.dart';
+import 'package:skripsi_project/presentation/edit_profile/widget/edit_form_widget.dart';
 
 import '../../common/components/custom_appbar.dart';
 import '../../common/constans/colors.dart';
 import '../../common/constans/navigation.dart';
 import '../../common/constans/variables.dart';
+import 'widget/edit_photo_widget.dart';
 
-class DetailProfilePage extends StatelessWidget {
+class EditProfilePage extends StatelessWidget {
   final AccountDetailData data;
-  const DetailProfilePage({
+  const EditProfilePage({
     super.key,
     required this.data,
   });
@@ -22,14 +23,16 @@ class DetailProfilePage extends StatelessWidget {
         body: Column(
           children: [
             CustomAppbar(
-              title: Variables.profile,
+              title: Variables.editProfile,
               function: () {
                 Navigations.popNavigation(context);
               },
             ),
+            const SizedBox(height: 24),
+            const EditPhotoWidget(),
             const SizedBox(height: 32),
             Expanded(
-              child: DetailDataWidget(data: data),
+              child: EditFormWidget(data: data),
             ),
           ],
         ),

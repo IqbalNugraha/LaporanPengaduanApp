@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 import '../constans/colors.dart';
@@ -19,25 +16,24 @@ class CustomCirclePhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Uint8List bytes = base64Decode(imageProfile);
     return Container(
+      height: height,
+      width: width,
       decoration: const BoxDecoration(
         color: MyColors.bgImage,
         shape: BoxShape.circle,
         boxShadow: Variables.shadowRadius1,
       ),
       child: ClipOval(
-        child: Image.memory(
-          bytes,
-          height: height,
-          width: width,
+        child: Image.network(
+          imageProfile,
+          fit: BoxFit.cover,
           errorBuilder: (context, exception, stackTrace) {
             return Image.asset(
               ImageAssets.logo,
-              width: width,
-              height: height,
+              fit: BoxFit.cover,
             );
-          },          
+          },
         ),
       ),
     );
