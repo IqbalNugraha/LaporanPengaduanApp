@@ -42,6 +42,7 @@ dependencies:
   freezed_annotation: ^2.4.1
   google_fonts: ^6.1.0
   http: ^1.1.0
+  http_parser: ^4.0.2
   image_picker: ^1.0.4
   intl: ^0.18.1
   month_picker_dialog: ^2.0.2
@@ -52,6 +53,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   another_stepper: ^1.2.2
   dartz: ^0.10.1
+  file_picker: ^6.1.1
 
 dev_dependencies:
   flutter_test:

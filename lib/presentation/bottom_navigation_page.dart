@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skripsi_project/presentation/home/home_page.dart';
 
 import '../common/components/custom_circle_avatar.dart';
 import '../common/constans/colors.dart';
@@ -19,7 +20,7 @@ class BottomNavigationPage extends StatefulWidget {
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
-    Container(),
+    const HomePage(),
     const UserProfilePage(),
   ];
 

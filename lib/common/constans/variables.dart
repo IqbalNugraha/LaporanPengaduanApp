@@ -39,6 +39,18 @@ class Variables {
   static const String takePhoto = "Take Photo";
   static const String removePhoto = "Remove Photo";
 
+  //report
+  static const String city = "City";
+  static const String province = "Province";
+  static const String subdistrict = "Subdistrict";
+  static const String descReport = "Description Report";
+  static const String noKip = "No KIP";
+  static const String noKks = "No KKS";
+  static const String noBpjs = "No BPJS";
+  static const String reportEmpty = "List Report's Empty";
+  static const String updateReport = "Update Report";
+  static const String additional = "Additional";
+
   //hint
   static const String hintEmail = "Input your email";
   static const String hintPassword = "Input your password";
@@ -47,6 +59,7 @@ class Variables {
   static const String hintPhone = "ex: 08xx";
   static const String hintIdIdentity = "ex: 327";
   static const String hintAddress = "Input your address location";
+  static const String hintReportDesc = "Input your Report Description";
 
   //message
   static const String msgSuccess = "Success";
@@ -57,8 +70,7 @@ class Variables {
   static const String msgPasswordNotSame = "Password not same";
   static const String msgPasswordLenght =
       "Password must have at least 8 characters \n with a mix of uppercase, lowercase, \n symbols, and numbers.";
-  static const String msgRemovePhoto =
-      "Are u sure want to remove this photo";
+  static const String msgRemovePhoto = "Are u sure want to remove this photo";
 
   //button
   static const String btnLogin = "Login";
@@ -69,6 +81,7 @@ class Variables {
   static const String btnLogout = "Logout";
   static const String btnYes = "Yes";
   static const String btnNo = "No";
+  static const String btnUpload = "Upload";
 
   // shadow
   static const List<BoxShadow> shadowRadius1 = [

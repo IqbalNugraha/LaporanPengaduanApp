@@ -10,7 +10,7 @@ class AccountRemoteDatasource {
   Future<Either<String, AccountDetailResponseModel>> getAccount() async {
     final token = await LocalDatasource().getToken();
     final id = await LocalDatasource().getId();
-    final url = Uri.parse("${ApiServices.baseUrl + ApiServices.account}/$id");
+    final url = Uri.parse("${ApiServices.baseUrl + ApiServices.account}/$id?populate=*");
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
