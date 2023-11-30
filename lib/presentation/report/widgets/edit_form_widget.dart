@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skripsi_project/bloc/raja_ongkir/get_province/get_province_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:skripsi_project/bloc/util/pick_report_image/pick_report_image_bloc.dart';
-import 'package:skripsi_project/data/models/request/report/report_request_model.dart';
+import 'package:skripsi_project/bloc/report/edit_report/edit_report_bloc.dart';
+import 'package:skripsi_project/data/models/response/report/report_response_model.dart';
 
 import '../../../bloc/raja_ongkir/get_city/get_city_bloc.dart';
+import '../../../bloc/raja_ongkir/get_province/get_province_bloc.dart';
 import '../../../bloc/raja_ongkir/get_subdistrict/get_subdistrict_bloc.dart';
-import '../../../bloc/report/add_report/add_report_bloc.dart';
+import '../../../bloc/util/pick_report_image/pick_report_image_bloc.dart';
 import '../../../common/components/custom_button.dart';
 import '../../../common/components/custom_circle_avatar.dart';
 import '../../../common/components/custom_container.dart';
@@ -20,23 +20,29 @@ import '../../../common/components/custom_font.dart';
 import '../../../common/components/custom_listview.dart';
 import '../../../common/components/custom_loading_state.dart';
 import '../../../common/components/custom_text_field_no_border.dart';
+import '../../../common/constans/api_services.dart';
 import '../../../common/constans/colors.dart';
 import '../../../common/constans/navigation.dart';
 import '../../../common/constans/variables.dart';
 import '../../../data/datasources/local_datasources.dart';
+import '../../../data/models/request/report/report_request_model.dart';
 import '../../../data/models/response/raja_ongkir/city_response_model.dart';
 import '../../../data/models/response/raja_ongkir/province_response_model.dart';
 import '../../../data/models/response/raja_ongkir/subdistrict_response_model.dart';
 import '../../../data/repositories/repo_bloc.dart';
 
-class AddFormWidget extends StatefulWidget {
-  const AddFormWidget({super.key});
+class EditFormPage extends StatefulWidget {
+  final ReportData data;
+  const EditFormPage({
+    super.key,
+    required this.data,
+  });
 
   @override
-  State<AddFormWidget> createState() => _AddFormWidgetState();
+  State<EditFormPage> createState() => _EditFormPageState();
 }
 
-class _AddFormWidgetState extends State<AddFormWidget> {
+class _EditFormPageState extends State<EditFormPage> {
   var nameController = TextEditingController();
   var noIdentityController = TextEditingController();
   var phoneController = TextEditingController();
@@ -49,6 +55,30 @@ class _AddFormWidgetState extends State<AddFormWidget> {
   City? _selectedCity;
   SubDistrict? _selectedSubdistrict;
   String? _province, _city, _subdistrict, _filePath, _idProvince, _idCity;
+
+  @override
+  void initState() {
+    context
+        .read<GetCityBloc>()
+        .add(GetCityEvent.getCity(widget.data.attributes!.idProvince!));
+    context.read<GetSubdistrictBloc>().add(
+        GetSubdistrictEvent.getSubdistrict(widget.data.attributes!.idCity!));
+
+    nameController.text = widget.data.attributes!.name!;
+    noIdentityController.text = widget.data.attributes!.noIdentity!;
+    phoneController.text = widget.data.attributes!.phoneNumber!;
+    _province = widget.data.attributes!.province!;
+    _city = widget.data.attributes!.city!;
+    _subdistrict = widget.data.attributes!.subdistrict!;
+    addressController.text = widget.data.attributes!.address!;
+    descController.text = widget.data.attributes!.descriptionReport ?? "";
+    noKipController.text = widget.data.attributes!.noKip ?? "";
+    noKksController.text = widget.data.attributes!.noKks ?? "";
+    noBpjsController.text = widget.data.attributes!.noBpjs ?? "";
+    _idProvince = widget.data.attributes!.idProvince!;
+    _idCity = widget.data.attributes!.idCity!;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +141,15 @@ class _AddFormWidgetState extends State<AddFormWidget> {
                 return const CustomLoadingState();
               },
               success: (response) {
-                _selectedProvince = response.rajaongkir.results.first;
+                if (_province == null) {
+                  _selectedProvince = response.rajaongkir.results.first;
+                  _province = response.rajaongkir.results.first.province;
+                } else {
+                  _selectedProvince = response.rajaongkir.results.firstWhere(
+                    (element) => _province == element.province,
+                  );
+                }
+
                 return CustomDropdown(
                   borderColor: MyColors.blackFont,
                   textColor: MyColors.blackFont,
@@ -133,96 +171,86 @@ class _AddFormWidgetState extends State<AddFormWidget> {
             );
           },
         ),
-        _selectedProvince != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  const FontPoppins(
-                    text: Variables.city,
-                    size: 14,
-                    fontWeight: FontWeight.w500,
-                    color: MyColors.blackFont,
-                    alignment: TextAlign.start,
-                  ),
-                  const SizedBox(height: 4),
-                  BlocBuilder<GetCityBloc, GetCityState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        orElse: () {
-                          return const CustomLoadingState();
-                        },
-                        success: (response) {
-                          _selectedCity = response.rajaongkir.results.first;
-                          return CustomDropdown(
-                            borderColor: MyColors.blackFont,
-                            textColor: MyColors.blackFont,
-                            menuMaxHeight: 200,
-                            items: response.rajaongkir.results,
-                            value: _selectedCity,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedCity = value;
-                                _city = _selectedCity!.cityName;
-                                _idCity = _selectedCity!.cityId;
-                                context
-                                    .read<GetSubdistrictBloc>()
-                                    .add(GetSubdistrictEvent.getSubdistrict(
-                                      _selectedCity!.cityId,
-                                    ));
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              )
-            : const SizedBox(),
-        _selectedCity != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  const FontPoppins(
-                    text: Variables.subdistrict,
-                    size: 14,
-                    fontWeight: FontWeight.w500,
-                    color: MyColors.blackFont,
-                    alignment: TextAlign.start,
-                  ),
-                  const SizedBox(height: 4),
-                  BlocBuilder<GetSubdistrictBloc, GetSubdistrictState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        orElse: () {
-                          return const CustomLoadingState();
-                        },
-                        success: (response) {
-                          _selectedSubdistrict =
-                              response.rajaongkir.results.first;
-                          return CustomDropdown(
-                            borderColor: MyColors.blackFont,
-                            textColor: MyColors.blackFont,
-                            menuMaxHeight: 200,
-                            items: response.rajaongkir.results,
-                            value: _selectedSubdistrict,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedSubdistrict = value;
-                                _subdistrict =
-                                    _selectedSubdistrict!.subdistrictName;
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              )
-            : const SizedBox(),
+        const SizedBox(height: 16),
+        const FontPoppins(
+          text: Variables.city,
+          size: 14,
+          fontWeight: FontWeight.w500,
+          color: MyColors.blackFont,
+          alignment: TextAlign.start,
+        ),
+        const SizedBox(height: 4),
+        BlocBuilder<GetCityBloc, GetCityState>(
+          builder: (context, state) {
+            return state.maybeWhen(
+              orElse: () {
+                return const CustomLoadingState();
+              },
+              success: (response) {
+                _selectedCity = response.rajaongkir.results.firstWhere(
+                  (element) => _city == element.cityName,
+                );
+
+                return CustomDropdown(
+                  borderColor: MyColors.blackFont,
+                  textColor: MyColors.blackFont,
+                  menuMaxHeight: 200,
+                  items: response.rajaongkir.results,
+                  value: _selectedCity,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCity = value;
+                      _city = _selectedCity!.cityName;
+                      _idCity = _selectedCity!.cityId;
+                      context
+                          .read<GetSubdistrictBloc>()
+                          .add(GetSubdistrictEvent.getSubdistrict(
+                            _selectedCity!.cityId,
+                          ));
+                    });
+                  },
+                );
+              },
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        const FontPoppins(
+          text: Variables.subdistrict,
+          size: 14,
+          fontWeight: FontWeight.w500,
+          color: MyColors.blackFont,
+          alignment: TextAlign.start,
+        ),
+        const SizedBox(height: 4),
+        BlocBuilder<GetSubdistrictBloc, GetSubdistrictState>(
+          builder: (context, state) {
+            return state.maybeWhen(
+              orElse: () {
+                return const CustomLoadingState();
+              },
+              success: (response) {
+                _selectedSubdistrict = response.rajaongkir.results.firstWhere(
+                  (element) => _subdistrict == element.subdistrictName,
+                );
+
+                return CustomDropdown(
+                  borderColor: MyColors.blackFont,
+                  textColor: MyColors.blackFont,
+                  menuMaxHeight: 200,
+                  items: response.rajaongkir.results,
+                  value: _selectedSubdistrict,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedSubdistrict = value;
+                      _subdistrict = _selectedSubdistrict!.subdistrictName;
+                    });
+                  },
+                );
+              },
+            );
+          },
+        ),
         const SizedBox(height: 16),
         const FontPoppins(
           text: Variables.address,
@@ -309,28 +337,39 @@ class _AddFormWidgetState extends State<AddFormWidget> {
                         .read<PickReportImageBloc>()
                         .add(const PickReportImageEvent.pickImage());
                   },
-                  child: const CustomContainer(
-                    height: 90,
-                    bgColor: MyColors.grey,
-                    widget: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: MyColors.white,
-                          size: 40,
+                  child: widget.data.attributes!.thumbnails!.data != null
+                      ? SizedBox(
+                          height: 180,
+                          width: size.width,
+                          child: Image.network(
+                            ApiServices.baseUrl +
+                                widget.data.attributes!.thumbnails!.data!.first
+                                    .attributes!.url!,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : const CustomContainer(
+                          height: 90,
+                          bgColor: MyColors.grey,
+                          widget: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: MyColors.white,
+                                size: 40,
+                              ),
+                              SizedBox(height: 8),
+                              FontPoppins(
+                                text: Variables.btnUpload,
+                                size: 9,
+                                fontWeight: FontWeight.w400,
+                                color: MyColors.white,
+                                alignment: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(height: 8),
-                        FontPoppins(
-                          text: Variables.btnUpload,
-                          size: 9,
-                          fontWeight: FontWeight.w400,
-                          color: MyColors.white,
-                          alignment: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
                 );
               },
               success: (file) {
@@ -396,7 +435,7 @@ class _AddFormWidgetState extends State<AddFormWidget> {
           },
         ),
         const SizedBox(height: 28),
-        BlocConsumer<AddReportBloc, AddReportState>(
+        BlocConsumer<EditReportBloc, EditReportState>(
           builder: (context, state) {
             return state.maybeWhen(
               orElse: () {
@@ -415,24 +454,21 @@ class _AddFormWidgetState extends State<AddFormWidget> {
                       noKip: noKipController.text,
                       noKks: noKksController.text,
                       noBpjs: noBpjsController.text,
-                      idProvince: _idProvince!,
-                      idCity: _idCity!,
                       account: id,
+                      idCity: _idCity!,
+                      idProvince: _idProvince!,
                     );
                     final files = _filePath != null
                         ? await http.MultipartFile.fromPath(
-                            'files',
+                            'file',
                             _filePath!,
                             contentType: MediaType('image', 'png'),
                           )
                         : null;
                     if (context.mounted) {
-                      context
-                          .read<AddReportBloc>()
-                          .add(AddReportEvent.addReport(
-                            model,
-                            files,
-                          ));
+                      context.read<EditReportBloc>().add(
+                          EditReportEvent.editReport(
+                              model, files, widget.data.id!));
                     }
                   },
                   widget: const FontPoppins(

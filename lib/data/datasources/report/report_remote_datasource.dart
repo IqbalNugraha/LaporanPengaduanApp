@@ -62,8 +62,7 @@ class ReportRemoteDatasource {
     );
 
     if (ApiServices.validStatusCodes.contains(responseUpdateUser.statusCode)) {
-      return Right(
-          ReportUpdateResponseModel.fromJson(responseUpdateUser.body));
+      return Right(ReportUpdateResponseModel.fromJson(responseUpdateUser.body));
     } else if (responseUpdateUser.statusCode == 408) {
       return const Left(Variables.msgHttp408);
     } else {
@@ -96,10 +95,37 @@ class ReportRemoteDatasource {
     );
 
     if (ApiServices.validStatusCodes.contains(responseUpdateUser.statusCode)) {
-      return Right(
-          ReportUpdateResponseModel.fromJson(responseUpdateUser.body));
+      return Right(ReportUpdateResponseModel.fromJson(responseUpdateUser.body));
     } else if (responseUpdateUser.statusCode == 408) {
       return const Left(Variables.msgHttp408);
+    } else {
+      return const Left(Variables.msgHttp500);
+    }
+  }
+
+  //delete
+  Future<Either<String, ReportUpdateResponseModel>> deleteReport(int id) async {
+    final token = await LocalDatasource().getToken();
+    final url = Uri.parse(
+        "${ApiServices.baseUrl + ApiServices.report}/$id");
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    };
+    final response = await http
+        .delete(
+      url,
+      headers: headers,
+    )
+        .timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        return http.Response(Variables.msgHttp408, 408);
+      },
+    );
+
+    if (ApiServices.validStatusCodes.contains(response.statusCode)) {
+      return Right(ReportUpdateResponseModel.fromJson(response.body));
     } else {
       return const Left(Variables.msgHttp500);
     }

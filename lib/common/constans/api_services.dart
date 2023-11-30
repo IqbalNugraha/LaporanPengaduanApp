@@ -1,5 +1,5 @@
 class ApiServices {
-  static const String baseUrl = "https://968c-103-147-8-59.ngrok-free.app";
+  static const String baseUrl = "https://66ca-103-147-8-59.ngrok-free.app";
   static const String baseUrlRajaOngkir = "https://pro.rajaongkir.com/api";
   static const String rajaOngkirKey = 'a9da3c4359fafde97f03ee2be60147b2';
 

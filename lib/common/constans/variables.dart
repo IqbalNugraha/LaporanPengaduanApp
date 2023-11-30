@@ -48,6 +48,7 @@ class Variables {
   static const String noKks = "No KKS";
   static const String noBpjs = "No BPJS";
   static const String reportEmpty = "List Report's Empty";
+  static const String addReport = "Add Report";
   static const String updateReport = "Update Report";
   static const String additional = "Additional";
 
@@ -62,7 +63,9 @@ class Variables {
   static const String hintReportDesc = "Input your Report Description";
 
   //message
+  static const String loading = "Loading...";
   static const String msgSuccess = "Success";
+  static const String msgSuccessDelete = "Success Delete";
   static const String msgCantEmpty = "Can't empty";
   static const String msgLogout = "Are u sure want to Log Out?";
   static const String msgHttp408 = "Request Time Out";
@@ -71,6 +74,8 @@ class Variables {
   static const String msgPasswordLenght =
       "Password must have at least 8 characters \n with a mix of uppercase, lowercase, \n symbols, and numbers.";
   static const String msgRemovePhoto = "Are u sure want to remove this photo";
+  static const String msgRemoveReport =
+      "Are u sure want to remove this report";
 
   //button
   static const String btnLogin = "Login";
@@ -81,6 +86,7 @@ class Variables {
   static const String btnLogout = "Logout";
   static const String btnYes = "Yes";
   static const String btnNo = "No";
+  static const String btnOkay = "Okay";
   static const String btnUpload = "Upload";
 
   // shadow

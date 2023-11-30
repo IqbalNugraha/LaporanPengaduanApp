@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skripsi_project/presentation/report/widgets/component_delete.dart';
+import 'package:swipe_to/swipe_to.dart';
 import 'package:skripsi_project/bloc/report/get_all_report/get_all_report_bloc.dart';
 import 'package:skripsi_project/common/components/custom_circle_avatar.dart';
 
+import '../../common/components/custom_bottom_popup.dart';
 import '../../common/components/custom_font.dart';
 import '../../common/components/custom_loading_state.dart';
 import '../../common/constans/colors.dart';
@@ -40,8 +43,24 @@ class ReportPage extends StatelessWidget {
                   itemCount: response.data!.length,
                   separatorBuilder: (context, i) => const SizedBox(height: 16),
                   itemBuilder: (context, i) {
-                    return CardReport(
-                      data: response.data![i],
+                    return SwipeTo(
+                      swipeSensitivity: 20,
+                      leftSwipeWidget: const Icon(
+                        Icons.delete,
+                        size: 42,
+                        color: MyColors.red,
+                      ),
+                      onLeftSwipe: (details) {
+                        CustomPopupBottom.showModalBottom(
+                          context,
+                          ComponentDelete(
+                            data: response.data![i],
+                          ),
+                        );
+                      },
+                      child: CardReport(
+                        data: response.data![i],
+                      ),
                     );
                   },
                 );

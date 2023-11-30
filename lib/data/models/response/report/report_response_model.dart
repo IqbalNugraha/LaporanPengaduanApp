@@ -73,6 +73,8 @@ class Report {
   final String? noKip;
   final String? noKks;
   final String? noBpjs;
+  final String? idProvince;
+  final String? idCity;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final DateTime? publishedAt;
@@ -91,6 +93,8 @@ class Report {
     this.noKip,
     this.noKks,
     this.noBpjs,
+    this.idProvince,
+    this.idCity,
     this.createdAt,
     this.updatedAt,
     this.publishedAt,
@@ -114,6 +118,8 @@ class Report {
         noKip: json["no_kip"],
         noKks: json["no_kks"],
         noBpjs: json["no_bpjs"],
+        idProvince: json["id_province"],
+        idCity: json["id_city"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -142,6 +148,8 @@ class Report {
         "no_kip": noKip,
         "no_kks": noKks,
         "no_bpjs": noBpjs,
+        "id_province": idProvince,
+        "id_city": idCity,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "publishedAt": publishedAt?.toIso8601String(),
